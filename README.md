@@ -1,164 +1,478 @@
-# Battery ECM Identification from Datasheet Curves
+# Battery Equivalent Circuit Model Identification from Manufacturer Discharge Curves
 
 <p align="center">
-	<img src="assets/ecm-icon.svg" alt="ECM repository icon" width="170"/>
+    <img src="assets/ecm-icon.svg" alt="ECM repository icon" width="170"/>
 </p>
 
-Author: Andrea Coraddu
+<p align="center">
+    <b>B6390 — Hybrid and Electric Marine Propulsion</b><br>
+    Alma Mater Studiorum — Università di Bologna
+</p>
 
-## Overview
+<p align="center">
+    Author: Prof. Andrea Coraddu
+</p>
 
-This project builds an Equivalent Circuit Model (ECM) for the Valence U27-12XP module using digitised manufacturer discharge curves.
+---
 
-The implemented workflow is intentionally physics-aware and data-limited:
-- static parameters are identified from multi-rate voltage-capacity curves;
-- dynamic branch parameters are provided as a constrained surrogate for simulation;
-- validation and verification outputs are exported as reproducible artifacts.
+# Overview
 
-Input dataset:
-- data/valence_digitised_curves_actual.csv
+This repository provides a reproducible framework for identifying an Equivalent Circuit Model (ECM) of the Valence U27-12XP lithium-ion battery module from digitised manufacturer discharge curves.
 
-## Brand Assets
+The methodology originates from the tutorial and lecture material developed for the course:
 
-Repository icon variants:
-- assets/ecm-icon.svg: default icon for README and light backgrounds
-- assets/ecm-icon-dark.svg: icon for dark backgrounds
-- assets/ecm-icon-minimal.svg: minimal flat variant
-- assets/ecm-icon-avatar.svg: circular avatar variant
+**B6390 — Hybrid and Electric Marine Propulsion**
+Alma Mater Studiorum — Università di Bologna
+Academic Year 2025–2026
 
-## Theoretical Core
+The work addresses a common practical limitation in battery modelling: detailed laboratory characterisation data are often unavailable during early-stage engineering design and feasibility studies. In many engineering applications, only manufacturer discharge curves are available, preventing direct estimation of transient electrochemical dynamics.
 
-The identifiable model from datasheet curves is the quasi-static relation:
+The implemented methodology therefore adopts a physics-aware and data-constrained identification strategy in which:
+
+- quasi-static electrical characteristics are inferred from multi-rate discharge curves;
+- dynamic ECM parameters are represented through constrained surrogate models;
+- validation and verification procedures ensure physical consistency and reproducibility.
+
+The resulting framework enables rapid generation of simulation-ready battery models for:
+
+- hybrid and electric marine propulsion systems;
+- energy management strategy development;
+- system-level power simulations;
+- digital twin applications;
+- preliminary design optimisation;
+- MATLAB and Simulink implementation.
+
+---
+
+# Scientific Contributions
+
+The repository provides the following capabilities.
+
+## State-dependent quasi-static parameter identification
+
+Multi-rate manufacturer discharge curves are used to estimate:
 
 $$
-\hat V_T(z, I) = V_{\mathrm{OC}}(z) - I\,R_{\mathrm{eff}}(z)
+V_{\mathrm{OC}}^{\mathrm{fit}}(z)
+$$
+
+and
+
+$$
+R_{\mathrm{eff}}(z)
+$$
+
+across the complete state-of-charge range.
+
+---
+
+## Physics-constrained identification
+
+The parameter estimation procedure incorporates:
+
+- smoothness regularisation;
+- admissibility constraints;
+- positivity constraints.
+
+These prevent unrealistic oscillations and non-physical parameter values.
+
+---
+
+## Dynamic surrogate model generation
+
+A reduced-order two-branch Thevenin ECM structure is generated despite the absence of pulse-characterisation measurements.
+
+---
+
+## Reproducible validation framework
+
+Automated validation routines assess:
+
+- reconstruction accuracy;
+- leave-one-curve-out performance;
+- parameter smoothness;
+- physical feasibility;
+- consistency with manufacturer operating limits.
+
+---
+
+# Input Dataset
+
+The repository currently uses:
+
+```text
+data/valence_digitised_curves_actual.csv
+```
+
+containing digitised manufacturer discharge curves of the Valence U27-12XP battery module at multiple discharge rates.
+
+---
+
+# Repository Assets
+
+Available graphical assets:
+
+```text
+assets/ecm-icon.svg
+assets/ecm-icon-dark.svg
+assets/ecm-icon-minimal.svg
+assets/ecm-icon-avatar.svg
+```
+
+---
+
+# Mathematical Formulation
+
+## Quasi-static Battery Representation
+
+Under sustained discharge conditions, the battery terminal voltage is approximated as:
+
+$$
+\hat V_T(z,I)
+=
+V_{\mathrm{OC}}^{\mathrm{fit}}(z)
+-
+I\,R_{\mathrm{eff}}(z)
 $$
 
 where:
-- $z$ is state of charge,
-- $V_{\mathrm{OC}}(z)$ is a zero-current extrapolated voltage profile,
-- $R_{\mathrm{eff}}(z)$ is an apparent sustained-discharge resistance.
 
-At each fixed SoC point, parameters are recovered with a linear fit in current:
+- $z$ denotes state of charge;
+- $V_{\mathrm{OC}}^{\mathrm{fit}}(z)$ denotes datasheet-extrapolated open-circuit voltage;
+- $R_{\mathrm{eff}}(z)$ denotes apparent sustained-discharge resistance.
+
+The formulation assumes that discharge curves primarily contain quasi-static information.
+
+---
+
+## Local Parameter Identification
+
+At a given state-of-charge value:
 
 $$
-V_T(z_i, I_j) = \alpha_i + \beta_i I_j + \varepsilon_{ij},
-\qquad
-V_{\mathrm{OC}}(z_i) = \alpha_i,
-\qquad
-R_{\mathrm{eff}}(z_i) = -\beta_i
+V_T(z_i,I_j)
+=
+\alpha_i
++
+\beta_i I_j
++
+\varepsilon_{ij}
 $$
 
-### Optimization Problem
+where:
 
-The identification step can be written as a weighted least-squares problem at each SoC grid point:
+$$
+V_{\mathrm{OC}}^{\mathrm{fit}}(z_i)
+=
+\alpha_i
+$$
+
+and
+
+$$
+R_{\mathrm{eff}}(z_i)
+=
+-\beta_i
+$$
+
+with
+
+$$
+\varepsilon_{ij}
+$$
+
+representing digitisation and measurement uncertainty.
+
+---
+
+## Weighted Least-Squares Estimation
+
+The identification problem is formulated as:
 
 $$
 \hat{\theta}_i
 =
 \arg\min_{\theta_i}
-\left\|W_i^{1/2}\left(v_i - A_i\theta_i\right)\right\|_2^2,
-\qquad
-	heta_i =
+\left\|
+W_i^{1/2}
+(v_i-A_i\theta_i)
+\right\|_2^2
+$$
+
+with
+
+$$
+\theta_i
+=
 \begin{bmatrix}
 \alpha_i\\
 \beta_i
 \end{bmatrix}
 $$
 
-with $A_i = [\mathbf{1},\, I]$ and $v_i$ the vector of measured voltages across selected C-rates.
-
-When smoothness constraints are enabled, the project also supports a global regularized formulation:
+and
 
 $$
-\min_{v_{\mathrm{OC}},\, r_{\mathrm{eff}}}
-\; J_{\mathrm{fit}}
-+ \lambda_{\mathrm{OC}}\left\|D_2 v_{\mathrm{OC}}\right\|_2^2
-+ \lambda_R\left\|D_2 r_{\mathrm{eff}}\right\|_2^2
+A_i
+=
+\begin{bmatrix}
+1&I_1\\
+1&I_2\\
+\vdots&\vdots\\
+1&I_n
+\end{bmatrix}
 $$
 
-subject to physical admissibility constraints such as:
+---
+
+## Regularised Global Identification
+
+Smooth state-dependent parameter profiles are obtained through:
 
 $$
-V_{\min} \le V_{\mathrm{OC}}(z) \le V_{\max},
+\min_{v_{\mathrm{OC}},r_{\mathrm{eff}}}
+J_{\mathrm{fit}}
++
+\lambda_{\mathrm{OC}}
+\|D_2v_{\mathrm{OC}}\|_2^2
++
+\lambda_R
+\|D_2r_{\mathrm{eff}}\|_2^2
+$$
+
+subject to
+
+$$
+V_{\min}
+\le
+V_{\mathrm{OC}}(z)
+\le
+V_{\max}
+$$
+
+and
+
+$$
+R_{\mathrm{eff}}(z)
+>
+0
+$$
+
+where:
+
+$$
+D_2
+$$
+
+is the second-order finite-difference operator.
+
+---
+
+## Dynamic Extension for Time-Domain Simulation
+
+For simulation purposes, the identified quasi-static representation is extended through a two-branch Thevenin structure:
+
+$$
+V_T
+=
+V_{\mathrm{OC}}^{\mathrm{fit}}(z)
+-
+R_0(z)I
+-
+V_1
+-
+V_2
+$$
+
+with dynamic branch states:
+
+$$
+\dot V_k
+=
+-
+\frac{1}{R_kC_k}
+V_k
++
+\frac{1}{C_k}I,
 \qquad
-R_{\mathrm{eff}}(z) > 0
+k\in\{1,2\}
 $$
 
-### Dynamic Extension for Simulation
-
-For time-domain simulation, a 2RC Thevenin-style structure is exported:
+subject to:
 
 $$
-V_T = V_{\mathrm{OC}}(z) - R_0(z)I - V_1 - V_2
+R_0(z)
++
+R_1(z)
++
+R_2(z)
+=
+R_{\mathrm{eff}}(z)
 $$
 
-with branch states
+---
+
+# Model Identifiability and Limitations
+
+Manufacturer discharge curves alone cannot uniquely identify transient electrochemical dynamics.
+
+Consequently:
+
+Directly identified quantities:
 
 $$
-\dot V_k = -\frac{1}{R_k C_k}V_k + \frac{1}{C_k}I, \quad k \in \{1,2\}
+V_{\mathrm{OC}}^{\mathrm{fit}}(z),
+\qquad
+R_{\mathrm{eff}}(z)
 $$
 
-and consistency enforced through
+Surrogate quantities:
 
 $$
-R_0(z) + R_1(z) + R_2(z) = R_{\mathrm{eff}}(z)
+R_0,
+R_1,
+C_1,
+R_2,
+C_2
 $$
 
-## Important Interpretation Limit
+remain constrained approximations rather than experimentally identified quantities.
 
-Sustained discharge curves do not uniquely identify dynamic $R$-$C$ branches.
+Rigorous dynamic identification would require:
 
-Therefore:
-- $V_{\mathrm{OC}}(z)$ and $R_{\mathrm{eff}}(z)$ are identified from available data,
-- $R_0, R_1, C_1, R_2, C_2$ are constrained surrogate parameters unless pulse/rest tests are provided.
+- pulse-current tests;
+- relaxation experiments;
+- temperature-dependent measurements;
+- electrochemical characterisation.
 
-## Workflow
+Therefore, the generated dynamic ECM should be interpreted as a simulation-oriented engineering approximation.
 
-Run from MATLAB in the repository root:
+---
+
+# Computational Workflow
+
+Run from MATLAB:
 
 ```matlab
 main_00_run_all
 ```
 
 Pipeline:
-1. import and preprocess digitised manufacturer curves,
-2. map capacity-used to SoC and C-rate to current,
-3. identify $V_{\mathrm{OC}}(z)$ and $R_{\mathrm{eff}}(z)$,
-4. construct surrogate 2RC tables,
-5. validate reconstruction and holdout behavior,
-6. verify physical admissibility,
-7. export tables, figures, and MAT artifacts,
-8. simulate static and dynamic responses in time domain.
 
-## Repository Structure
+1. Import and preprocess manufacturer discharge curves
 
-- main_00_run_all.m: end-to-end workflow entry point
-- main_01_identify_validate.m: identification, validation, and export
-- main_02_simulate_time_domain.m: static vs dynamic simulation
-- main_03_generate_report_figures.m: report-oriented figure generation
-- +ecmdata: input parsing and matrix construction
-- +ecmopt: parameter identification and checks
-- +ecmmodel: static and dynamic ECM objects
-- +ecmval: validation suite and acceptance gates
-- +ecmplot: plotting utilities
-- outputs: exported numerical evidence
-- Figures: generated report figures
+2. Convert discharged capacity into state of charge
 
-## Main Outputs
+3. Convert C-rates into current values
 
-- outputs/valence_actual_ecm_parameters.mat
-- outputs/identified_parameter_tables_from_matlab.csv
-- outputs/validation_metrics_from_matlab.csv
-- outputs/leave_one_curve_out_from_matlab.csv
-- outputs/verification_checks_from_matlab.csv
-- outputs/validation_*_full.csv
-- outputs/time_simulation_results.mat
+4. Identify
 
-## Notes on Reproducibility
+$$
+V_{\mathrm{OC}}^{\mathrm{fit}}(z)
+$$
 
-The project is deterministic under fixed input curves and script settings.
+and
 
-If input data, fitting weights, or constraints are changed, regenerate:
-- all outputs in outputs,
-- all figures in Figures.
+$$
+R_{\mathrm{eff}}(z)
+$$
+
+5. Generate surrogate dynamic parameters
+
+6. Perform validation and holdout analysis
+
+7. Verify physical consistency
+
+8. Export outputs
+
+9. Execute static and dynamic simulations
+
+---
+
+# Repository Structure
+
+```text
+main_00_run_all.m
+│
+├── main_01_identify_validate.m
+├── main_02_simulate_time_domain.m
+├── main_03_generate_report_figures.m
+│
+├── +ecmdata/
+├── +ecmopt/
+├── +ecmmodel/
+├── +ecmval/
+├── +ecmplot/
+│
+├── data/
+├── outputs/
+└── Figures/
+```
+
+---
+
+# Main Outputs
+
+```text
+outputs/
+├── valence_actual_ecm_parameters.mat
+├── identified_parameter_tables_from_matlab.csv
+├── validation_metrics_from_matlab.csv
+├── leave_one_curve_out_from_matlab.csv
+├── verification_checks_from_matlab.csv
+├── validation_*_full.csv
+└── time_simulation_results.mat
+```
+
+---
+
+# Reproducibility Statement
+
+The framework is deterministic under fixed:
+
+- input datasets;
+- weighting matrices;
+- identification settings;
+- optimisation constraints;
+- regularisation parameters.
+
+Changing any of these requires regeneration of:
+
+```text
+outputs/
+Figures/
+```
+
+to preserve numerical reproducibility.
+
+---
+
+# References
+
+[1] Coraddu, A.
+*Battery Equivalent-Circuit Parameter Identification: Valence U-Charge XP Datasheet Example.*
+B6390 — Hybrid and Electric Marine Propulsion.
+Alma Mater Studiorum — Università di Bologna.
+Academic Year 2025–2026.
+
+[2] Coraddu, A.
+*Hybrid and Electric Marine Propulsion Lecture Notes.*
+B6390 — Hybrid and Electric Marine Propulsion.
+Alma Mater Studiorum — Università di Bologna.
+Academic Year 2025–2026.
+
+
+---
+
+# Citation
+
+```bibtex
+@misc{coraddu_ecm_repository_2026,
+author={Coraddu, Andrea},
+title={Battery Equivalent Circuit Model Identification from Manufacturer Discharge Curves},
+year={2026},
+note={Educational and research repository developed within B6390 -- Hybrid and Electric Marine Propulsion, Alma Mater Studiorum -- Università di Bologna}
+}
+```
+
+---
