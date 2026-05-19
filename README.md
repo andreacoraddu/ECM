@@ -50,19 +50,7 @@ The repository provides the following capabilities.
 
 ## State-dependent quasi-static parameter identification
 
-Multi-rate manufacturer discharge curves are used to estimate:
-
-$$
-V_{\mathrm{OC}}^{\mathrm{fit}}(z)
-$$
-
-and
-
-$$
-R_{\mathrm{eff}}(z)
-$$
-
-across the complete state-of-charge range.
+Multi-rate manufacturer discharge curves are used to estimate $V_{\mathrm{OC}}^{\mathrm{fit}}(z)$ and $R_{\mathrm{eff}}(z)$ across the complete state-of-charge range.
 
 ---
 
@@ -150,38 +138,18 @@ The formulation assumes that discharge curves primarily contain quasi-static inf
 At a given state-of-charge value:
 
 $$
-V_T(z_i,I_j)
-=
-\alpha_i
-+
-\beta_i I_j
-+
-\varepsilon_{ij}
-$$
-
-where:
-
-$$
-V_{\mathrm{OC}}^{\mathrm{fit}}(z_i)
-=
-\alpha_i
-$$
-
-and
-
-$$
-R_{\mathrm{eff}}(z_i)
-=
--\beta_i
+V_T(z_i,I_j) = \alpha_i + \beta_i I_j + \varepsilon_{ij}
 $$
 
 with
 
 $$
-\varepsilon_{ij}
+V_{\mathrm{OC}}^{\mathrm{fit}}(z_i) = \alpha_i,
+\qquad
+R_{\mathrm{eff}}(z_i) = -\beta_i
 $$
 
-representing digitisation and measurement uncertainty.
+where $\varepsilon_{ij}$ represents digitisation and measurement uncertainty.
 
 ---
 
@@ -193,33 +161,24 @@ $$
 \hat{\theta}_i
 =
 \arg\min_{\theta_i}
-\left\|
-W_i^{1/2}
-(v_i-A_i\theta_i)
-\right\|_2^2
+\left\|W_i^{1/2}(v_i-A_i\theta_i)\right\|_2^2
 $$
 
 with
 
 $$
-\theta_i
-=
+	heta_i =
 \begin{bmatrix}
 \alpha_i\\
 \beta_i
-\end{bmatrix}
-$$
-
-and
-
-$$
-A_i
-=
+\end{bmatrix},
+\qquad
+A_i =
 \begin{bmatrix}
-1&I_1\\
-1&I_2\\
-\vdots&\vdots\\
-1&I_n
+1 & I_1\\
+1 & I_2\\
+\vdots & \vdots\\
+1 & I_n
 \end{bmatrix}
 $$
 
@@ -231,40 +190,20 @@ Smooth state-dependent parameter profiles are obtained through:
 
 $$
 \min_{v_{\mathrm{OC}},r_{\mathrm{eff}}}
-J_{\mathrm{fit}}
-+
-\lambda_{\mathrm{OC}}
-\|D_2v_{\mathrm{OC}}\|_2^2
-+
-\lambda_R
-\|D_2r_{\mathrm{eff}}\|_2^2
+\; J_{\mathrm{fit}}
++ \lambda_{\mathrm{OC}}\|D_2v_{\mathrm{OC}}\|_2^2
++ \lambda_R\|D_2r_{\mathrm{eff}}\|_2^2
 $$
 
 subject to
 
 $$
-V_{\min}
-\le
-V_{\mathrm{OC}}(z)
-\le
-V_{\max}
+V_{\min} \le V_{\mathrm{OC}}(z) \le V_{\max},
+\qquad
+R_{\mathrm{eff}}(z) > 0
 $$
 
-and
-
-$$
-R_{\mathrm{eff}}(z)
->
-0
-$$
-
-where:
-
-$$
-D_2
-$$
-
-is the second-order finite-difference operator.
+where $D_2$ is the second-order finite-difference operator.
 
 ---
 
@@ -273,41 +212,20 @@ is the second-order finite-difference operator.
 For simulation purposes, the identified quasi-static representation is extended through a two-branch Thevenin structure:
 
 $$
-V_T
-=
-V_{\mathrm{OC}}^{\mathrm{fit}}(z)
--
-R_0(z)I
--
-V_1
--
-V_2
+V_T = V_{\mathrm{OC}}^{\mathrm{fit}}(z) - R_0(z)I - V_1 - V_2
 $$
 
 with dynamic branch states:
 
 $$
-\dot V_k
-=
--
-\frac{1}{R_kC_k}
-V_k
-+
-\frac{1}{C_k}I,
-\qquad
-k\in\{1,2\}
+\dot V_k = -\frac{1}{R_kC_k}V_k + \frac{1}{C_k}I,
+\qquad k\in\{1,2\}
 $$
 
 subject to:
 
 $$
-R_0(z)
-+
-R_1(z)
-+
-R_2(z)
-=
-R_{\mathrm{eff}}(z)
+R_0(z) + R_1(z) + R_2(z) = R_{\mathrm{eff}}(z)
 $$
 
 ---
@@ -318,23 +236,9 @@ Manufacturer discharge curves alone cannot uniquely identify transient electroch
 
 Consequently:
 
-Directly identified quantities:
+Directly identified quantities: $V_{\mathrm{OC}}^{\mathrm{fit}}(z)$ and $R_{\mathrm{eff}}(z)$.
 
-$$
-V_{\mathrm{OC}}^{\mathrm{fit}}(z),
-\qquad
-R_{\mathrm{eff}}(z)
-$$
-
-Surrogate quantities:
-
-$$
-R_0,
-R_1,
-C_1,
-R_2,
-C_2
-$$
+Surrogate quantities: $R_0, R_1, C_1, R_2, C_2$.
 
 remain constrained approximations rather than experimentally identified quantities.
 
@@ -366,16 +270,7 @@ Pipeline:
 3. Convert C-rates into current values
 
 4. Identify
-
-$$
-V_{\mathrm{OC}}^{\mathrm{fit}}(z)
-$$
-
-and
-
-$$
-R_{\mathrm{eff}}(z)
-$$
+    $V_{\mathrm{OC}}^{\mathrm{fit}}(z)$ and $R_{\mathrm{eff}}(z)$
 
 5. Generate surrogate dynamic parameters
 
