@@ -49,6 +49,42 @@ V_{\mathrm{OC}}(z_i) = \alpha_i,
 R_{\mathrm{eff}}(z_i) = -\beta_i
 $$
 
+### Optimization Problem
+
+The identification step can be written as a weighted least-squares problem at each SoC grid point:
+
+$$
+\hat{\theta}_i
+=
+\arg\min_{\theta_i}
+\left\|W_i^{1/2}\left(v_i - A_i\theta_i\right)\right\|_2^2,
+\qquad
+	heta_i =
+\begin{bmatrix}
+\alpha_i\\
+\beta_i
+\end{bmatrix}
+$$
+
+with $A_i = [\mathbf{1},\, I]$ and $v_i$ the vector of measured voltages across selected C-rates.
+
+When smoothness constraints are enabled, the project also supports a global regularized formulation:
+
+$$
+\min_{v_{\mathrm{OC}},\, r_{\mathrm{eff}}}
+\; J_{\mathrm{fit}}
++ \lambda_{\mathrm{OC}}\left\|D_2 v_{\mathrm{OC}}\right\|_2^2
++ \lambda_R\left\|D_2 r_{\mathrm{eff}}\right\|_2^2
+$$
+
+subject to physical admissibility constraints such as:
+
+$$
+V_{\min} \le V_{\mathrm{OC}}(z) \le V_{\max},
+\qquad
+R_{\mathrm{eff}}(z) > 0
+$$
+
 ### Dynamic Extension for Simulation
 
 For time-domain simulation, a 2RC Thevenin-style structure is exported:

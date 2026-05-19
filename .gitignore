@@ -27,3 +27,6 @@ outputs/validation_report_full.txt
 # Editor
 .vscode/
 .idea/
+
+# Repository graphics and branding assets
+assets/
