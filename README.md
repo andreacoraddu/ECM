@@ -160,7 +160,7 @@ $$
 with
 
 $$
-    heta_i =
+	heta_i =
 \begin{bmatrix}
 \alpha_i\\
 \beta_i
@@ -274,6 +274,59 @@ Pipeline:
 8. Export outputs
 
 9. Execute static and dynamic simulations
+
+---
+
+# MEX Build and Compiler Requirements
+
+The weighted local identification kernel supports a native compiled path:
+
+- MATLAB wrapper MEX: `ecm_weighted_local_mex.c`
+- C++ computational core: `ecm_weighted_local_core.cpp`
+
+The pipeline attempts to build and use the MEX kernel automatically at startup (`main_00_run_all.m`) through `ecmutil.tryBuildMex`.
+
+If build succeeds, the identifier uses the native core; otherwise it falls back to the pure MATLAB implementation.
+
+## Required tools
+
+1. MATLAB with MEX support (tested with MATLAB R2025b)
+2. A configured C compiler for MEX (tested with Xcode Clang on macOS)
+3. A C++ compiler for the core object build (tested with `clang++`)
+
+## Build command
+
+From MATLAB, run:
+
+```matlab
+run('cpp/build_mex.m')
+```
+
+This generates:
+
+```text
+ecm_weighted_local_mex.<mexext>
+```
+
+in the project root.
+
+## Validation test
+
+To verify numerical parity between the MEX path and MATLAB path:
+
+```matlab
+run('tests/test_weighted_local_mex.m')
+```
+
+Expected behavior:
+
+- test passes with machine-precision differences
+- full workflow remains unchanged in outputs and validation logic
+
+## Notes for users
+
+- On environments where direct C++ MEX linking is problematic, this project uses a robust architecture: **C MEX wrapper + C++ core object**.
+- If native build is unavailable, the workflow still runs via MATLAB fallback with no API changes.
 
 ---
 
