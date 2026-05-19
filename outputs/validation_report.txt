@@ -1,0 +1,51 @@
+
+Valence U27-12XP ECM validation summary
+=======================================
+
+Source data:
+- Digitised voltage-capacity curves from uploaded Excel file.
+- Curves: C/8, C/5, C/3, C/2, 1C, 2C.
+- Capacity: Q = 138 Ah.
+- Voltage limits: 10.0 V to 14.6 V.
+- Continuous current limit: 150 A.
+- Peak current: 300 A for 30 s.
+- Datasheet maximum DC internal resistance: 5 mOhm.
+
+Identification:
+- Main fitting curves: C/8, C/5, C/3, C/2, 1C.
+- High-current validation: 2C.
+- SoC grid: 0.05 to 0.95.
+- Static model: Vt = OCV(z) - I*Reff(z).
+
+Static validation metrics:
+Curve Label  Current_A                   Group  N   RMSE_V    MAE_V  MaxAbsError_V    Bias_V
+  C/8    C8      17.25                     fit 91 0.023435 0.017893       0.088867  0.017893
+  C/5    C5      27.60                     fit 91 0.009783 0.006702       0.046978  0.006677
+  C/3    C3      46.00                     fit 91 0.017352 0.010427       0.080815 -0.010398
+  C/2    C2      69.00                     fit 91 0.034453 0.028132       0.112430 -0.028132
+   1C    C1     138.00                     fit 91 0.017688 0.013960       0.063962  0.013960
+   2C   C2x     276.00 high-current validation 91 0.311136 0.216690       1.228844  0.216690
+
+Parameter ranges:
+- OCV range: 12.2120 V to 13.2903 V.
+- Reff range: 3.6395 mOhm to 10.1208 mOhm.
+- Mean Reff: 4.3193 mOhm.
+- Local fixed-SoC regression R2: min 0.96269, mean 0.99171.
+
+Interpretation:
+- The data are sufficient for a full static/quasi-static ECM validation and verification.
+- They are not sufficient for rigorous dynamic 1RC/2RC parameter identification because no pulse/rest relaxation data are present.
+- Dynamic 2RC parameters are therefore provided as a surrogate simulation initialisation.
+- The 2C curve is outside the continuous-current fitting range and should be treated as high-current extrapolation/stress validation.
+
+Verification:
+                                                          Check  Pass                                   Detail
+                                  Positive effective resistance  True                    min Reff = 3.640 mOhm
+                          OCV inside datasheet voltage envelope  True              OCV range = 12.212-13.290 V
+             Fitted-curve reconstructed voltage inside envelope  True         fit Vhat range = 10.815-13.225 V
+All reconstructed curves inside envelope incl. 2C extrapolation False          all Vhat range = 9.419-13.225 V
+                                              Positive R0/R1/R2  True    min R0/R1/R2 = 3.540/0.035/0.065 mOhm
+                                                 Positive C1/C2  True           min C1/C2 = 11159.0/180260.5 F
+                  Surrogate steady-state resistance consistency  True             max mismatch = 0.000000 mOhm
+          Main fitting currents within continuous-current limit  True max fit current = 138.0 A, limit = 150 A
+                    2C curve treated as high-current validation  True                     2C current = 276.0 A

@@ -1,0 +1,11 @@
+Gate,Value,Threshold,Comparator,Pass,Comment
+fit_rmse_max,0.0205399194054194,0.03,<=,1,mean fit RMSE gate
+holdout_rmse_max,0.318394651660858,0.35,<=,1,main holdout RMSE gate
+loco_rmse_max,0.0494178995985575,0.08,<=,1,leave-one-curve-out RMSE gate
+fit_r2_min,0.994042374649934,0.98,>=,1,mean fit R2 gate
+holdout_r2_min,0.0189557876316345,0,>=,1,main holdout R2 gate
+noise_5mv_rmse_max,0.0706728824054829,0.09,<=,1,noise robustness RMSE gate
+extrap_1c_rmse_max,0.131882427431223,0.08,<=,0,1C extrapolation RMSE gate
+extrap_1c_r2_min,0.869393250538263,0.9,>=,0,1C extrapolation R2 gate
+extrap_2c_rmse_max,0.318394651660858,0.35,<=,1,2C extrapolation RMSE gate
+extrap_2c_r2_min,0.0189557876316345,0,>=,1,2C extrapolation R2 gate

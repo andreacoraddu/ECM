@@ -1,0 +1,23 @@
+# macOS
+.DS_Store
+
+# MATLAB
+*.asv
+*.m~
+*.mlx.autosave
+slprj/
+
+# LaTeX build artifacts
+*.aux
+*.toc
+*.log
+*.out
+*.lof
+*.lot
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+
+# Editor
+.vscode/
+.idea/

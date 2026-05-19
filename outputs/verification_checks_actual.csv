@@ -1,0 +1,10 @@
+Check,Pass,Detail
+Positive effective resistance,True,min Reff = 3.640 mOhm
+OCV inside datasheet voltage envelope,True,OCV range = 12.212-13.290 V
+Fitted-curve reconstructed voltage inside envelope,True,fit Vhat range = 10.815-13.225 V
+All reconstructed curves inside envelope incl. 2C extrapolation,False,all Vhat range = 9.419-13.225 V
+Positive R0/R1/R2,True,min R0/R1/R2 = 3.540/0.035/0.065 mOhm
+Positive C1/C2,True,min C1/C2 = 11159.0/180260.5 F
+Surrogate steady-state resistance consistency,True,max mismatch = 0.000000 mOhm
+Main fitting currents within continuous-current limit,True,"max fit current = 138.0 A, limit = 150 A"
+2C curve treated as high-current validation,True,2C current = 276.0 A
