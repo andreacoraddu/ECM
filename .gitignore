@@ -18,6 +18,12 @@ slprj/
 *.fdb_latexmk
 *.synctex.gz
 
+# Project report and manuscript files (kept local)
+ECM.tex
+ECM.pdf
+outputs/validation_report.txt
+outputs/validation_report_full.txt
+
 # Editor
 .vscode/
 .idea/

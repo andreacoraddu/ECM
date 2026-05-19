@@ -1,6 +1,6 @@
 %% main_02_simulate_time_domain.m
 % Time-domain simulation of static and dynamic ECMs.
-% Author: Prof. Andrea Coraddu
+% Author: Andrea Coraddu
 
 clear; close all; clc;
 

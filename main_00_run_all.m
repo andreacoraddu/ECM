@@ -1,6 +1,6 @@
 %% main_00_run_all.m
 % Run the full Valence U27-12XP ECM workflow.
-% Author: Prof. Andrea Coraddu
+% Author: Andrea Coraddu
 
 clear; close all; clc;
 

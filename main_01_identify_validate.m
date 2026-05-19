@@ -1,7 +1,7 @@
 %% main_01_identify_validate.m
 % Identify OCV(SOC) and Reff(SOC) from Valence manufacturer curves,
 % then run validation, verification, and export steps.
-% Author: Prof. Andrea Coraddu
+% Author: Andrea Coraddu
 
 clear; close all; clc;
 

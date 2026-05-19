@@ -1,6 +1,6 @@
 # Valence U27-12XP ECM Identification and Validation Package
 
-Author: Prof. Andrea Coraddu
+Author: Andrea Coraddu
 
 This package uses digitised manufacturer curves in `data/valence_digitised_curves_actual.csv`.
 

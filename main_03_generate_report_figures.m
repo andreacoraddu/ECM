@@ -1,6 +1,6 @@
 %% main_03_generate_report_figures.m
 % Generate supplementary report figures for the validation atlas section.
-% Author: Prof. Andrea Coraddu
+% Author: Andrea Coraddu
 % This script creates:
 % - Manufacturer source voltage profiles
 % - Renamed/reformatted identification figures
