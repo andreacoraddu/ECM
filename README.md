@@ -1,5 +1,9 @@
 # Battery ECM Identification from Datasheet Curves
 
+<p align="center">
+	<img src="assets/ecm-icon.svg" alt="ECM repository icon" width="170"/>
+</p>
+
 Author: Andrea Coraddu
 
 ## Overview
@@ -13,6 +17,14 @@ The implemented workflow is intentionally physics-aware and data-limited:
 
 Input dataset:
 - data/valence_digitised_curves_actual.csv
+
+## Brand Assets
+
+Repository icon variants:
+- assets/ecm-icon.svg: default icon for README and light backgrounds
+- assets/ecm-icon-dark.svg: icon for dark backgrounds
+- assets/ecm-icon-minimal.svg: minimal flat variant
+- assets/ecm-icon-avatar.svg: circular avatar variant
 
 ## Theoretical Core
 

@@ -1,0 +1,22 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ECM Minimal Icon">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f7faff"/>
+      <stop offset="100%" stop-color="#f3f8f6"/>
+    </linearGradient>
+    <linearGradient id="wave" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#9ec3ef"/>
+      <stop offset="100%" stop-color="#88cfa9"/>
+    </linearGradient>
+  </defs>
+
+  <rect x="0" y="0" width="1024" height="1024" rx="220" fill="url(#bg)"/>
+  <rect x="300" y="250" width="424" height="524" rx="64" fill="#ffffff" stroke="#7f98ac" stroke-width="14"/>
+  <rect x="446" y="190" width="132" height="56" rx="18" fill="#7f98ac"/>
+
+  <path d="M360 560 C410 500, 462 620, 514 560 C566 500, 616 620, 668 560"
+        fill="none" stroke="url(#wave)" stroke-width="26" stroke-linecap="round"/>
+
+  <rect x="356" y="655" width="312" height="18" rx="9" fill="#c8d6e2"/>
+  <text x="512" y="730" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="74" font-weight="700" fill="#6f8699">ECM</text>
+</svg>

@@ -1,0 +1,24 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ECM Avatar Icon">
+  <defs>
+    <radialGradient id="bg" cx="35%" cy="30%" r="80%">
+      <stop offset="0%" stop-color="#f8fbff"/>
+      <stop offset="100%" stop-color="#eaf3fb"/>
+    </radialGradient>
+    <linearGradient id="ring" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#9ec3ef"/>
+      <stop offset="50%" stop-color="#88cfa9"/>
+      <stop offset="100%" stop-color="#d7a5d7"/>
+    </linearGradient>
+  </defs>
+
+  <circle cx="512" cy="512" r="490" fill="url(#bg)"/>
+  <circle cx="512" cy="512" r="470" fill="none" stroke="url(#ring)" stroke-width="22"/>
+
+  <rect x="332" y="280" width="360" height="430" rx="54" fill="#ffffff" stroke="#7e96aa" stroke-width="12"/>
+  <rect x="458" y="232" width="108" height="50" rx="16" fill="#7e96aa"/>
+
+  <path d="M374 535 C418 488, 466 586, 512 535 C558 484, 606 586, 650 535"
+        fill="none" stroke="#8fbce9" stroke-width="22" stroke-linecap="round"/>
+
+  <text x="512" y="790" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="96" font-weight="700" fill="#6f8699">ECM</text>
+</svg>
