@@ -116,11 +116,7 @@ assets/ecm-icon-avatar.svg
 Under sustained discharge conditions, the battery terminal voltage is approximated as:
 
 $$
-\hat V_T(z,I)
-=
-V_{\mathrm{OC}}^{\mathrm{fit}}(z)
--
-I\,R_{\mathrm{eff}}(z)
+\hat V_T(z,I)=V_{\mathrm{OC}}^{\mathrm{fit}}(z)-I\,R_{\mathrm{eff}}(z)
 $$
 
 where:
@@ -158,16 +154,13 @@ where $\varepsilon_{ij}$ represents digitisation and measurement uncertainty.
 The identification problem is formulated as:
 
 $$
-\hat{\theta}_i
-=
-\arg\min_{\theta_i}
-\left\|W_i^{1/2}(v_i-A_i\theta_i)\right\|_2^2
+\hat{\theta}_i=\arg\min_{\theta_i}\left\|W_i^{1/2}(v_i-A_i\theta_i)\right\|_2^2
 $$
 
 with
 
 $$
-	heta_i =
+    heta_i =
 \begin{bmatrix}
 \alpha_i\\
 \beta_i
@@ -240,7 +233,7 @@ Directly identified quantities: $V_{\mathrm{OC}}^{\mathrm{fit}}(z)$ and $R_{\mat
 
 Surrogate quantities: $R_0, R_1, C_1, R_2, C_2$.
 
-remain constrained approximations rather than experimentally identified quantities.
+These remain constrained approximations rather than experimentally identified quantities.
 
 Rigorous dynamic identification would require:
 
