@@ -28,3 +28,9 @@ outputs/validation_report_full.txt
 .vscode/
 .idea/
 
+# Native build artifacts
+*.mexmaca64
+*.mexa64
+*.mexw64
+cpp/*.o
+

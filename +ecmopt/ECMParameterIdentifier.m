@@ -45,10 +45,13 @@ classdef ECMParameterIdentifier
             fitInfo.FitLabels = data.Labels(data.FitMask);
         end
 
-        function [model, fitInfo] = fitWeightedLocal(obj, data, weightMatrix)
+        function [model, fitInfo] = fitWeightedLocal(obj, data, weightMatrix, useMex)
             % Fit each SoC slice with weighted least squares.
             if nargin < 3 || isempty(weightMatrix)
                 weightMatrix = obj.defaultWeightMatrix(data);
+            end
+            if nargin < 4 || isempty(useMex)
+                useMex = true;
             end
 
             z = data.SOCGrid(:);
@@ -58,42 +61,54 @@ classdef ECMParameterIdentifier
             Reff = nan(M,1);
             R2local = nan(M,1);
 
-            for i = 1:M
-                y = data.V(i,fitIdx).';
-                I = data.I_A(fitIdx).';
-                w = weightMatrix(i,fitIdx).';
-                valid = isfinite(y) & isfinite(I) & isfinite(w) & (w > 0);
-                A = [ones(sum(valid),1), I(valid)];
-                yv = y(valid);
-                wv = w(valid);
+            canUseMex = useMex && exist('ecm_weighted_local_mex', 'file') == 3;
 
-                if numel(yv) < 2
-                    OCV(i) = NaN;
-                    Reff(i) = NaN;
-                    R2local(i) = NaN;
-                    continue;
+            if canUseMex
+                [OCV, Reff, R2local] = ecm_weighted_local_mex( ...
+                    data.V, data.I_A, data.FitMask, weightMatrix, ...
+                    obj.Module.Vmin_V, obj.Module.Vmax_V);
+                fitInfo.Method = 'weighted local fixed-SoC least squares (C++ MEX)';
+                fitInfo.CoreEngine = 'ecm_weighted_local_mex';
+            else
+                for i = 1:M
+                    y = data.V(i,fitIdx).';
+                    I = data.I_A(fitIdx).';
+                    w = weightMatrix(i,fitIdx).';
+                    valid = isfinite(y) & isfinite(I) & isfinite(w) & (w > 0);
+                    A = [ones(sum(valid),1), I(valid)];
+                    yv = y(valid);
+                    wv = w(valid);
+
+                    if numel(yv) < 2
+                        OCV(i) = NaN;
+                        Reff(i) = NaN;
+                        R2local(i) = NaN;
+                        continue;
+                    end
+
+                    Aw = A .* sqrt(wv);
+                    yw = yv .* sqrt(wv);
+                    p = Aw \ yw;
+
+                    OCV(i) = min(max(p(1), obj.Module.Vmin_V), obj.Module.Vmax_V);
+                    Reff(i) = max(-p(2), 1e-6);
+
+                    yhat = A*p;
+                    ybar = sum(wv .* yv) / sum(wv);
+                    ssRes = sum(wv .* (yv - yhat).^2);
+                    ssTot = sum(wv .* (yv - ybar).^2);
+                    if ssTot <= eps
+                        R2local(i) = 1;
+                    else
+                        R2local(i) = 1 - ssRes/ssTot;
+                    end
                 end
 
-                Aw = A .* sqrt(wv);
-                yw = yv .* sqrt(wv);
-                p = Aw \ yw;
-
-                OCV(i) = min(max(p(1), obj.Module.Vmin_V), obj.Module.Vmax_V);
-                Reff(i) = max(-p(2), 1e-6);
-
-                yhat = A*p;
-                ybar = sum(wv .* yv) / sum(wv);
-                ssRes = sum(wv .* (yv - yhat).^2);
-                ssTot = sum(wv .* (yv - ybar).^2);
-                if ssTot <= eps
-                    R2local(i) = 1;
-                else
-                    R2local(i) = 1 - ssRes/ssTot;
-                end
+                fitInfo.Method = 'weighted local fixed-SoC least squares';
+                fitInfo.CoreEngine = 'matlab';
             end
 
             model = ecmmodel.StaticECM(z, OCV, Reff, obj.Module.Q_Ah);
-            fitInfo.Method = 'weighted local fixed-SoC least squares';
             fitInfo.LocalR2 = R2local;
             fitInfo.FitLabels = data.Labels(data.FitMask);
             fitInfo.Weighting = 'default endpoint/current-aware weighting';
